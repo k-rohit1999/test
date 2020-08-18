@@ -8,7 +8,8 @@ function App() {
     fetchDate();
   }, []);
 
-  const [success, setSuccess] = useState(true);
+  const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const [dates, setDate] = useState([]);
   const [times, setTime] = useState([]);
@@ -41,21 +42,35 @@ function App() {
           'Content-Type': 'application/json'
       },
       body: {"apptDate":`${selectedDate}`,
-      "apptTime":`${selectedTime}`,
-      "bookingTimeSlot":`${selectedDate}`,
-      "bpId":"BPTNR165920563018216",
-      "bpName":"Merchant Name",
-      "bpServiceCatogery":"Skincare",
-      "bpServiceSubCatogery":"Facial",
-      "price":"0",
-      "serviceCatogery":"Facial Cupping",
-      "serviceName":"Facial Cupping",
-      "staffName":`${staffName}`,
-      "userId":"CONS110819219070736"
-    }
+            "apptTime":`${selectedTime}`,
+            "bookingTimeSlot":`${selectedDate}`,
+            "bpId":"BPTNR165920563018216",
+            "bpName":"Merchant Name",
+            "bpServiceCatogery":"Skincare",
+            "bpServiceSubCatogery":"Facial",
+            "price":"0",
+            "serviceCatogery":"Facial Cupping",
+            "serviceName":"Facial Cupping",
+            "staffName":`${staffName}`,
+            "userId":"CONS110819219070736"
+      }
   };
   fetch('https://apidev.gobaskt.com/consumerAppointmentsApi/gobaskt/createUserApppointment', requestOptions)
-      .then(response => response.json());
+  .then(async response => {
+    const data = await response.json();
+
+    // check for error response
+    if (!response.ok) {
+        const error = (data && data.message) || response.status;
+        return Promise.reject(error);
+    }
+
+    setSuccess(data.success);
+  })
+  .catch(error => {
+    setErrorMsg(error.toString());
+    console.error('There was an error!', error);
+  });
 }
 
   const showtime = (date, timeslots) => {
@@ -67,11 +82,6 @@ function App() {
   const timeAndName = (time, name) => {
     setSelectedTime(time);
     setStaffName(name);
-  }
-
-  const postAndSuccess=()=>{
-    setSuccess(false);
-    postData();
   }
 
   const dateSlots = dates.map((date) => {
@@ -103,7 +113,7 @@ function App() {
   return (
     <>
     {
-      (success) ? (
+      !(success) ? (
         <>
             <nav style={{backgroundColor:'#0079ff'}}>
             <h5 style={{color: '#ffffff'}} className="pt-3 pb-3 ml-2">Schedule Appointment</h5>
@@ -154,7 +164,7 @@ function App() {
               </Card>
                 <div className="col-12 mt-5">
                   <button style={{backgroundColor:'#f67300', color:'white'}} className="btn btn-block pt-3 pb-3"
-                    onClick={postAndSuccess}
+                    onClick={postData}
                   >BOOK APPOINTMENTS</button>
                 </div>
           </Container>
