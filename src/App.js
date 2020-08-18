@@ -98,6 +98,8 @@ function App() {
   console.log('selected time', selectedTime);
   console.log('selected staff', staffName);
 
+  const properDate = new Date(`${selectedDate}`).toDateString();
+
   return (
     <>
     {
@@ -137,7 +139,7 @@ function App() {
                 </CardBody>
               </Card>
               <Card className="p-1">
-                <CardTitle>Available Time Slots</CardTitle>
+                <CardTitle>Available Time Slots {(visible)?(<a>on <b>{properDate}</b></a>):null}</CardTitle>
                 {(visible) ? (
                   <CardBody>
                     <Container>
