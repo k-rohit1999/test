@@ -25,6 +25,7 @@ function App() {
   const bpServiceSubCatogery = urlParams.get('bpServiceSubCatogery');
   const serviceCatogery = urlParams.get('serviceCatogery');
   const serviceName = urlParams.get('serviceName');
+  const userId = urlParams.get('userId');
 
 
   const fetchDate = async () => {
@@ -39,21 +40,21 @@ function App() {
     const requestOptions = {
       method: 'POST',
       headers: { 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
       },
-      body: {"apptDate":`${selectedDate}`,
-            "apptTime":`${selectedTime}`,
-            "bookingTimeSlot":`${selectedDate}`,
-            "bpId":"BPTNR165920563018216",
-            "bpName":"Merchant Name",
-            "bpServiceCatogery":"Skincare",
-            "bpServiceSubCatogery":"Facial",
-            "price":"0",
-            "serviceCatogery":"Facial Cupping",
-            "serviceName":"Facial Cupping",
-            "staffName":`${staffName}`,
-            "userId":"CONS110819219070736"
-      }
+      body: JSON.stringify({"apptDate":`${selectedDate}`,
+      "apptTime":`${selectedTime}`,
+      "bookingTimeSlot":`${selectedDate}`,
+      "bpId":`${bpId}`,
+      "bpName":`${bpName}`,
+      "bpServiceCatogery":`${bpServiceCatogery}`,
+      "bpServiceSubCatogery":`${bpServiceSubCatogery}`,
+      "price":"0",
+      "serviceCatogery":`${serviceCatogery}`,
+      "serviceName":`${serviceName}`,
+      "staffName":`${staffName}`,
+      "userId":`${userId}`
+  })
   };
   fetch('https://apidev.gobaskt.com/consumerAppointmentsApi/gobaskt/createUserApppointment', requestOptions)
   .then(async response => {
@@ -69,9 +70,9 @@ function App() {
   })
   .catch(error => {
     setErrorMsg(error.toString());
-    console.error('There was an error!', error);
+    console.error('There was an error!', errorMsg);
   });
-}
+};
 
   const showtime = (date, timeslots) => {
     setSelectedDate(date);
@@ -87,7 +88,7 @@ function App() {
   const dateSlots = dates.map((date) => {
 
     let dt = new Date(`${date.date}`);
-    let d = dt.toDateString().split(' ').slice(1).join(' ');
+    let d = dt.toDateString().split(' ').slice(1).join(' ').substr(0,6);
 
     return(
               <Col xs="auto" className={`ml-2 mb-4 p-1 border border-secondary rounded`} key={date.date}>
@@ -98,7 +99,7 @@ function App() {
 
   const timeSlots = times.map((time) => {
     return(
-        <Col xs="auto" className="ml-2 mb-4 pl-4 pr-4 pt-2 pb-2 border border-secondary rounded" key={time.time}>
+        <Col xs="auto" className="ml-2 mb-4 pl-2 pr-2 pt-1 pb-1 border border-secondary rounded" key={time.time}>
           <button className="btn btn-light" onClick={() => timeAndName(time.time, time.staffName)}>{time.time}</button>
         </Col>
     );
@@ -119,7 +120,7 @@ function App() {
             <h5 style={{color: '#ffffff'}} className="pt-3 pb-3 ml-2">Schedule Appointment</h5>
             </nav>
             <Container>
-              <p style={{fontWeight:'bold', fontSize:'20px'}}>Schedule Appointment at Merchant Name</p>
+              <p style={{fontWeight:'bold', fontSize:'20px'}}>Schedule Appointment at {bpName}</p>
               <Row className="justify-content-around">
                 <Col className="d-flex flex-column align-items-center border border-warning rounded p-2 m-2">
                   <img src="/calendar.png" alt="calender icon" style={{width:'20px', height:'20px' }} />
@@ -149,8 +150,9 @@ function App() {
                 </CardBody>
               </Card>
               <Card className="p-1">
-                <CardTitle>Available Time Slots {(visible)?(<a>on <b>{properDate}</b></a>):null}</CardTitle>
                 {(visible) ? (
+                  <>
+                  <CardTitle>Available Time Slots on <b>{properDate}</b></CardTitle>
                   <CardBody>
                     <Container>
                       <Row>
@@ -158,9 +160,8 @@ function App() {
                       </Row>
                     </Container>
                   </CardBody>
-                ):(
-                  <CardBody>Select a date</CardBody>
-                )}
+                  </>
+                ) : null}
               </Card>
                 <div className="col-12 mt-5">
                   <button style={{backgroundColor:'#f67300', color:'white'}} className="btn btn-block pt-3 pb-3"
