@@ -29,7 +29,7 @@ function App() {
 
 
   const fetchDate = async () => {
-    const fetchDate = await fetch(`https://apidev.gobaskt.com/consumerApi/book-appointment/BPTNR47854843750210?serviceName=Facial%20Cupping`, {
+    const fetchDate = await fetch(`https://apidev.gobaskt.com/consumerApi/book-appointment/${bpId}?serviceName=${serviceName}`, {
       method: 'GET'
     });
     let item = await fetchDate.json();
@@ -85,21 +85,21 @@ function App() {
     setStaffName(name);
   }
 
-  const dateSlots = dates.map((date) => {
+  const dateSlots = dates.map((date, i) => {
 
     let dt = new Date(`${date.date}`);
     let d = dt.toDateString().split(' ').slice(1).join(' ').substr(0,6);
 
     return(
-              <Col xs="auto" className={`ml-2 mb-4 p-1 border border-secondary rounded`} key={date.date}>
+              <Col xs="auto" className={`ml-2 mb-4 p-1 border border-secondary rounded`} key={i}>
                 <button className="btn btn-light" onClick={() => showtime(date.date, date.timeslots)}>{d}</button>
               </Col>
     );
   });
 
-  const timeSlots = times.map((time) => {
+  const timeSlots = times.map((time, i) => {
     return(
-        <Col xs="auto" className="ml-2 mb-4 pl-2 pr-2 pt-1 pb-1 border border-secondary rounded" key={time.time}>
+        <Col xs="auto" className="ml-2 mb-4 pl-2 pr-2 pt-1 pb-1 border border-secondary rounded" key={i}>
           <button className="btn btn-light" onClick={() => timeAndName(time.time, time.staffName)}>{time.time}</button>
         </Col>
     );
