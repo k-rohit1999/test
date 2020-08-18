@@ -11,8 +11,8 @@ const SuccessComponent = (...props) => {
             <div className="col-auto col-md-8 mb-4" style={{fontSize:'18px', fontWeight:'600'}}>Your Appointment for {item.serviceName} at {item.bpName} is booked for {dt} at {item.time}</div>
             <div className="col-auto col-md-8" style={{fontSize:'15px'}}>Please reach the store 15 mins before the scheduled Appointment</div>
             <div className="col-12 col-md-4 mt-5">
-                <button style={{backgroundColor:'white', color:'blue'}} className="btn btn-block pt-3 pb-3 border border-primary"
-                >Go Back to <span><img src="/image 1.png" style={{height:'30px', width:'30px'}} /></span></button>
+                <button style={{backgroundColor:'white', color:'#18a0fb'}} className="btn btn-block pt-3 pb-3 border border-primary"
+                ><b style={{fontSize:'15px'}}>GO BACK TO </b><span><img src="/image 1.png" style={{height:'30px', width:'30px'}} /></span></button>
             </div>
         </div>
     )   
