@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Card, CardTitle, CardBody, Container, Row, Col} from 'reactstrap';
 import Success from './SuccessComponent';
-
+import './App.css'
 function App() {
 
   useEffect(() => {
@@ -11,6 +11,7 @@ function App() {
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
+  const [datesArray, setDatesArray] = useState([])
   const [dates, setDate] = useState([]);
   const [times, setTime] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -29,11 +30,19 @@ function App() {
 
 
   const fetchDate = async () => {
-    const fetchDate = await fetch(`https://apidev.gobaskt.com/consumerApi/book-appointment/${bpId}?serviceName=${serviceName}`, {
+    // const fetchDate = await fetch(`https://apidev.gobaskt.com/consumerApi/book-appointment/${bpId}?serviceName=${serviceName}`, {
+      const fetchDate = await fetch(`https://apidev.gobaskt.com/consumerApi/book-appointment/BPTNR47854843750210?serviceName=Facial%20Cupping`, {
       method: 'GET'
     });
     let item = await fetchDate.json();
+  
     setDate(item.responseData[0].serviceDates);
+    let arr = [];
+    for( let i = 0; i < item.responseData[0].serviceDates.length;i++){
+      arr[i] = false;
+    }
+    setDatesArray(arr);
+
   };
 
   const postData = () => {
@@ -74,7 +83,21 @@ function App() {
   });
 };
 
-  const showtime = (date, timeslots) => {
+  const showtime = (e,date, timeslots) => {
+    let id = e.target.id;
+    console.log("id," + id);
+    console.log("arr", datesArray)
+    setDatesArray(preVal => {
+      return preVal.map((item ,i) => {
+        
+        if(i == id){
+          console.log("id",i)
+          return true
+        }
+        return false
+      })
+    })
+
     setSelectedDate(date);
     setVisible(true);
     setTime(timeslots);
@@ -92,7 +115,7 @@ function App() {
 
     return(
               <Col xs="auto" className={`ml-2 mb-4 p-1 border border-secondary rounded`} key={i}>
-                <button className="btn btn-light" onClick={() => showtime(date.date, date.timeslots)}>{d}</button>
+                <button className={datesArray[i] ? `selected`: ''} id={i} onClick={(e) => showtime(e,date.date, date.timeslots)}>{d}</button>
               </Col>
     );
   });
