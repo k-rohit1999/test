@@ -3,3 +3,8 @@
   margin: 0%;
 }
 
+.selected{
+  color: black;
+  background-color: pink;
+  border: none;
+}
